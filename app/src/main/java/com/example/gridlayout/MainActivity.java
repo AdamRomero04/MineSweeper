@@ -6,6 +6,7 @@ import androidx.gridlayout.widget.GridLayout;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -13,8 +14,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final int COLUMN_COUNT = 2;
+    private int clock = 0;
+    private static final int COLUMN_COUNT = 10;
+    private static final int ROW_COUNT = 12;
+    private boolean running = true;
 
     // save the TextViews of all cells in an array, so later on,
     // when a TextView is clicked, we know which cell it is
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         // Method (3): add four dynamically created cells with LayoutInflater
         LayoutInflater li = LayoutInflater.from(this);
         for (int i = 0; i < 12; i++) {
-            for (int j = 0; j < 10 ; j++) {
+            for (int j = 0; j < 10; j++) {
                 TextView tv = (TextView) li.inflate(R.layout.custom_cell_layout, grid, false);
                 //tv.setText(String.valueOf(i)+String.valueOf(j));
                 tv.setTextColor(Color.GRAY);
@@ -53,6 +56,14 @@ public class MainActivity extends AppCompatActivity {
                 cell_tvs.add(tv);
             }
         }
+
+        if (savedInstanceState != null) {
+            clock = savedInstanceState.getInt("clock");
+            running = savedInstanceState.getBoolean("running");
+        }
+        runTimer();
+
+
 
     }
 
@@ -78,8 +89,19 @@ public class MainActivity extends AppCompatActivity {
             tv.setBackgroundColor(Color.LTGRAY);
         }
     }
+    public void runTimer(){
+        final TextView timeView = (TextView) findViewById(R.id.clock);
+        final Handler handler = new Handler();
 
-    startTimer(){
-
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                timeView.setText(String.valueOf(clock));
+                if (running) {
+                    clock++;
+                }
+                handler.postDelayed(this, 1000);
+            }
+        });
     }
 }

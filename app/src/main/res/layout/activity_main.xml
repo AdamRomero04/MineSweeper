@@ -74,10 +74,10 @@
         tools:layout_editor_absoluteY="59dp" />
 
     <TextView
-        android:id="@+id/textView04"
+        android:id="@+id/clock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:width="64dp"
+        android:width="78dp"
         android:height="64dp"
         android:text="0"
         android:textAlignment="center"
@@ -88,6 +88,30 @@
         tools:layout_editor_absoluteY="59dp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/activity_main_bottom_linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/activity_main_gridLayout01">
+
+    <TextView
+        android:id="@+id/bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="64dp"
+        android:height="64dp"
+        android:text="@string/pick"
+        android:textAlignment="center"
+        android:textSize="50sp"
+        app:layout_column="1"
+        app:layout_row="1"
+        tools:layout_editor_absoluteX="297dp"
+        tools:layout_editor_absoluteY="59dp" />
+    </LinearLayout>
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/activity_main_gridLayout01"
         android:layout_height="wrap_content"
@@ -99,6 +123,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
     </androidx.gridlayout.widget.GridLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
