@@ -1,7 +1,15 @@
 package com.example.gridlayout;
+import android.graphics.Color;
+import android.widget.TextView;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.Queue;
 import java.util.LinkedList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.HashMap;
 
 public class Game {
     public boolean[][] bombs;
@@ -16,7 +24,7 @@ public class Game {
         plantMines();
     }
 
-    protected void plantMines(){
+    public void plantMines(){
         int[][] directions = {
                 {1, 0},
                 {1, 1},
@@ -50,28 +58,41 @@ public class Game {
         }
     }
 
-    protected void initialReveal(int x, int y) {
+    public void reveal(int x, int y, HashMap<List<Integer>, TextView> coordMap) {
         Queue<int[]> queue = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
         int[] initial = {x, y};
         queue.add(initial);
-        int cellsRevealed = 0;
 
-        while (!queue.isEmpty() && cellsRevealed <= 65) {
+        while (!queue.isEmpty()) {
             int[] front = queue.poll();
             int i = front[0];
             int j = front[1];
+            if (front == initial && bombFreqs[i][j] != 0){
+                revealed[i][j] = true;
+                TextView tv = coordMap.get(Arrays.asList(i, j));
+                tv.setTextColor(Color.GRAY);
+                tv.setBackgroundColor(Color.LTGRAY);
+                tv.setText(String.valueOf(bombFreqs[i][j]));
+                break;
+            }
 
-            // Check bounds and whether the cell is already revealed
-            if (i >= 0 && i < 12 && j >= 0 && j < 10 && !revealed[i][j]) {
-                if (!bombs[i][j]) {
-                    cellsRevealed++;
-                    revealed[i][j] = true;
-
-                    // Add neighboring cells to the queue
+            if (i >= 0 && i < 12 && j >= 0 && j < 10 && !revealed[i][j] && !visited.contains(i + "," + j)) {
+                revealed[i][j] = true;
+                visited.add(i + "," + j);
+                TextView tv = coordMap.get(Arrays.asList(i, j));
+                tv.setTextColor(Color.GRAY);
+                tv.setBackgroundColor(Color.LTGRAY);
+                tv.setText(String.valueOf(bombFreqs[i][j]));
+                if (!bombs[i][j] && bombFreqs[i][j] == 0) {
                     queue.add(new int[]{i - 1, j});
                     queue.add(new int[]{i + 1, j});
                     queue.add(new int[]{i, j - 1});
                     queue.add(new int[]{i, j + 1});
+                    queue.add(new int[]{i - 1, j - 1});
+                    queue.add(new int[]{i + 1, j + 1});
+                    queue.add(new int[]{i + 1, j - 1});
+                    queue.add(new int[]{i - 1, j + 1});
                 }
             }
         }

@@ -12,17 +12,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private int clock = 0;
     private static final int COLUMN_COUNT = 10;
     private static final int ROW_COUNT = 12;
     private boolean running = true;
+    private Game game;
+    private String clickState = "Pick";
+    private int currFlags = 4;
 
     // save the TextViews of all cells in an array, so later on,
     // when a TextView is clicked, we know which cell it is
     private ArrayList<TextView> cell_tvs;
+    private HashMap<TextView, int[]> tvMap;
+    private HashMap<List<Integer>, TextView> coordMap;
 
     private int dpToPixel(int dp) {
         float density = Resources.getSystem().getDisplayMetrics().density;
@@ -31,12 +39,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Game game = new Game();
+
+        game = new Game();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        TextView bottomtv = (TextView) findViewById(R.id.bottom);
+        bottomtv.setOnClickListener(this::onClickBottomTV);
+
         cell_tvs = new ArrayList<TextView>();
+        tvMap = new HashMap<TextView, int[]>();
+        coordMap = new HashMap<List<Integer>, TextView>();
 
         GridLayout grid = (GridLayout) findViewById(R.id.activity_main_gridLayout01);
 
@@ -56,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
                 grid.addView(tv, lp);
 
                 cell_tvs.add(tv);
+                tvMap.put(tv, new int[]{i, j});
+                coordMap.put(Arrays.asList(i, j), tv);
             }
         }
 
@@ -67,23 +83,59 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
     }
 
-    private int findIndexOfCellTextView(TextView tv) {
-        for (int n=0; n<cell_tvs.size(); n++) {
-            if (cell_tvs.get(n) == tv)
-                return n;
+    public void onClickBottomTV(View view){
+        TextView bottomTextView = (TextView) view;
+        if (clickState == "Pick"){
+            clickState = "Flag";
+            bottomTextView.setText(getString(R.string.flag));
         }
-        return -1;
+        else{
+            clickState = "Pick";
+            bottomTextView.setText(getString(R.string.pick));
+        }
     }
 
     public void onClickTV(View view){
         TextView tv = (TextView) view;
-        int n = findIndexOfCellTextView(tv);
-        int i = n/COLUMN_COUNT;
-        int j = n%COLUMN_COUNT;
-        tv.setTextColor(Color.GRAY);
-        tv.setBackgroundColor(Color.LTGRAY);
+        int[] data = tvMap.get(tv);
+        if (clickState == "Flag"){
+            int[] location = tvMap.get(tv);
+            String currentText = tv.getText().toString();
+            if (currentText.equals(getString(R.string.flag))) {
+                tv.setText(" ");
+                if (game.revealed[location[0]][location[1]]){
+                    int bombFrequency = game.bombFreqs[location[0]][location[1]];
+                    tv.setText(String.valueOf(bombFrequency));
+                }
+                currFlags += 1;
+                TextView numView = (TextView) findViewById(R.id.textView01);
+                numView.setText(String.valueOf(currFlags));
+            }
+            else if (game.revealed[location[0]][location[1]]){
+                return;
+            }
+            else {
+                if (currFlags == 0){
+                    return;
+                }
+                tv.setText(getString(R.string.flag));
+                currFlags -= 1;
+                TextView numView = (TextView) findViewById(R.id.textView01);
+                numView.setText(String.valueOf(currFlags));
+            }
+        }
+
+        else {
+            if (game.bombs[data[0]][data[1]]) {
+                //end game
+            }
+            else {
+                game.reveal(data[0], data[1], coordMap);
+            }
+        }
     }
     public void runTimer(){
         final TextView timeView = (TextView) findViewById(R.id.clock);
