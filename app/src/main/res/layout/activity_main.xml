@@ -112,6 +112,7 @@
         tools:layout_editor_absoluteX="297dp"
         tools:layout_editor_absoluteY="59dp" />
     </LinearLayout>
+
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/activity_main_gridLayout01"
         android:layout_height="wrap_content"
