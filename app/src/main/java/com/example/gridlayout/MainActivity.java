@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private int clock = 0;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private Game game;
     private String clickState = "Pick";
     private int currFlags = 4;
+    private int revealed = 0;
+    private boolean winState = false;
 
     // save the TextViews of all cells in an array, so later on,
     // when a TextView is clicked, we know which cell it is
@@ -88,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickBottomTV(View view){
         TextView bottomTextView = (TextView) view;
-        if (clickState == "Pick"){
+        if (clickState.equals("Pick")){
             clickState = "Flag";
             bottomTextView.setText(getString(R.string.flag));
         }
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickTV(View view){
         TextView tv = (TextView) view;
         int[] data = tvMap.get(tv);
-        if (clickState == "Flag"){
+        if (Objects.equals(clickState, "Flag")){
             int[] location = tvMap.get(tv);
             String currentText = tv.getText().toString();
             if (currentText.equals(getString(R.string.flag))) {
@@ -131,9 +134,25 @@ public class MainActivity extends AppCompatActivity {
         else {
             if (game.bombs[data[0]][data[1]]) {
                 //end game
+                for(int i = 0; i < 12; i++){
+                    for(int j = 0; j < 10; j++){
+                        if (game.bombs[i][j]){
+                            TextView bombTV = coordMap.get(Arrays.asList(i, j));
+                            bombTV.setText(" ");
+                            bombTV.setBackgroundColor(ContextCompat.getColor(this, R.color.black));
+                        }
+                    }
+                }
+
+                running = false;
             }
             else {
-                game.reveal(data[0], data[1], coordMap);
+                revealed += game.reveal(data[0], data[1], coordMap);
+                if (revealed == 116){
+                    //win
+                    running = false;
+                    winState = true;
+                }
             }
         }
     }

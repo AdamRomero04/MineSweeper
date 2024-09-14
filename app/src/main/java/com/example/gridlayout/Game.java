@@ -58,7 +58,8 @@ public class Game {
         }
     }
 
-    public void reveal(int x, int y, HashMap<List<Integer>, TextView> coordMap) {
+    public int reveal(int x, int y, HashMap<List<Integer>, TextView> coordMap) {
+        int totalRevealed = 0;
         Queue<int[]> queue = new LinkedList<>();
         Set<String> visited = new HashSet<>();
         int[] initial = {x, y};
@@ -74,11 +75,12 @@ public class Game {
                 tv.setTextColor(Color.GRAY);
                 tv.setBackgroundColor(Color.LTGRAY);
                 tv.setText(String.valueOf(bombFreqs[i][j]));
-                break;
+                return 1;
             }
 
             if (i >= 0 && i < 12 && j >= 0 && j < 10 && !revealed[i][j] && !visited.contains(i + "," + j)) {
                 revealed[i][j] = true;
+                totalRevealed += 1;
                 visited.add(i + "," + j);
                 TextView tv = coordMap.get(Arrays.asList(i, j));
                 tv.setTextColor(Color.GRAY);
@@ -96,6 +98,7 @@ public class Game {
                 }
             }
         }
+        return totalRevealed;
     }
 
 
