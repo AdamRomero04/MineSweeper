@@ -1,6 +1,7 @@
 package com.example.gridlayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.gridlayout.widget.GridLayout;
 
 import android.content.res.Resources;
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Game game = new Game();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -42,11 +45,10 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 10; j++) {
                 TextView tv = (TextView) li.inflate(R.layout.custom_cell_layout, grid, false);
-                //tv.setText(String.valueOf(i)+String.valueOf(j));
-                tv.setTextColor(Color.GRAY);
-                tv.setBackgroundColor(Color.GRAY);
+                tv.setTextColor(ContextCompat.getColor(this, R.color.dark_green));
+                tv.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_green));
                 tv.setOnClickListener(this::onClickTV);
-
+                tv.setText(String.valueOf(game.bombFreqs[i][j]));
                 GridLayout.LayoutParams lp = (GridLayout.LayoutParams) tv.getLayoutParams();
                 lp.rowSpec = GridLayout.spec(i);
                 lp.columnSpec = GridLayout.spec(j);
@@ -80,14 +82,8 @@ public class MainActivity extends AppCompatActivity {
         int n = findIndexOfCellTextView(tv);
         int i = n/COLUMN_COUNT;
         int j = n%COLUMN_COUNT;
-        tv.setText(String.valueOf(i)+String.valueOf(j));
-        if (tv.getCurrentTextColor() == Color.GRAY) {
-            tv.setTextColor(Color.GREEN);
-            tv.setBackgroundColor(Color.parseColor("lime"));
-        }else {
-            tv.setTextColor(Color.GRAY);
-            tv.setBackgroundColor(Color.LTGRAY);
-        }
+        tv.setTextColor(Color.GRAY);
+        tv.setBackgroundColor(Color.LTGRAY);
     }
     public void runTimer(){
         final TextView timeView = (TextView) findViewById(R.id.clock);
