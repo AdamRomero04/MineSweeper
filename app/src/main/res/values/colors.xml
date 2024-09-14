@@ -8,4 +8,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="dark_green">#004d00</color>
+    <color name="color1">#75FF5733</color>
+    <color name="color2">#7533FF57</color>
+    <color name="color3">#753357FF</color>
+    <color name="color4">#75FF33A1</color>
+    <color name="color5">#75FFFF33</color>
+    <color name="color6">#7533FFFF</color>
+    <color name="color7">#75FF8C00</color>
+    <color name="color8">#758A2BE2</color>
 </resources>

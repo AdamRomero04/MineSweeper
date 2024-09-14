@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private int clock = 0;
@@ -30,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private int revealed = 0;
     private boolean winState = false;
 
-    // save the TextViews of all cells in an array, so later on,
-    // when a TextView is clicked, we know which cell it is
     private ArrayList<TextView> cell_tvs;
     private HashMap<TextView, int[]> tvMap;
     private HashMap<List<Integer>, TextView> coordMap;
@@ -134,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
         else {
             if (game.bombs[data[0]][data[1]]) {
-                //end game
+                //lost game
                 for(int i = 0; i < 12; i++){
                     for(int j = 0; j < 10; j++){
                         if (game.bombs[i][j]){
@@ -157,6 +156,32 @@ public class MainActivity extends AppCompatActivity {
                     //win
                     running = false;
                     winState = true;
+
+                    for(int i = 0; i < 12; i++){
+                        for(int j = 0; j < 10; j++){
+                            TextView colorTV = coordMap.get(Arrays.asList(i, j));
+                            colorTV.setText(" ");
+                            if (game.bombs[i][j]){
+                                colorTV.setBackgroundColor(ContextCompat.getColor(this, R.color.black));
+                            }
+                            else{
+                                int[] colors = {
+                                        ContextCompat.getColor(this, R.color.color1),
+                                        ContextCompat.getColor(this, R.color.color2),
+                                        ContextCompat.getColor(this, R.color.color3),
+                                        ContextCompat.getColor(this, R.color.color4),
+                                        ContextCompat.getColor(this, R.color.color5),
+                                        ContextCompat.getColor(this, R.color.color6),
+                                        ContextCompat.getColor(this, R.color.color7),
+                                        ContextCompat.getColor(this, R.color.color8)
+                                };
+                                Random random = new Random();
+                                int randomColor = colors[random.nextInt(colors.length)];
+                                colorTV.setBackgroundColor(randomColor);
+                            }
+                        }
+                    }
+
                     for(int i = 0; i < cell_tvs.size(); i++){
                         cell_tvs.get(i).setOnClickListener(this::endClickTV);
                     }
@@ -167,6 +192,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void endClickTV(View view){
         Intent intent = new Intent(MainActivity.this, Result.class);
+        intent.putExtra("outcome", winState); // Pass true for win, false for loss
+        intent.putExtra("time", clock);
+        startActivity(intent);
 
     }
     public void runTimer(){
