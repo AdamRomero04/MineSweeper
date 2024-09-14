@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.gridlayout.widget.GridLayout;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -145,6 +146,10 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 running = false;
+                for(int i = 0; i < cell_tvs.size(); i++){
+                    cell_tvs.get(i).setOnClickListener(this::endClickTV);
+                }
+
             }
             else {
                 revealed += game.reveal(data[0], data[1], coordMap);
@@ -152,9 +157,17 @@ public class MainActivity extends AppCompatActivity {
                     //win
                     running = false;
                     winState = true;
+                    for(int i = 0; i < cell_tvs.size(); i++){
+                        cell_tvs.get(i).setOnClickListener(this::endClickTV);
+                    }
                 }
             }
         }
+    }
+
+    public void endClickTV(View view){
+        Intent intent = new Intent(MainActivity.this, Result.class);
+
     }
     public void runTimer(){
         final TextView timeView = (TextView) findViewById(R.id.clock);
